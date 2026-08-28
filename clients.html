@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCC Appointment — Apply</title>
+<meta name="description" content="GCC Visa & Travel Medical Appointment Booking" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  :root{
+    --navy: #0B132B; 
+    --navy-2: #1C2541; 
+    --paper: #F8FAFC; 
+    --paper-2: #F1F5F9;
+    --gold: #C59B27; 
+    --gold-2: #E5C158; 
+    --ink: #0F172A; 
+    --muted: #64748B; 
+    --line: #E2E8F0;
+    --green: #10B981; 
+    --amber: #F59E0B; 
+    --red: #EF4444; 
+    --radius: 12px; 
+    --shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:var(--paper);color:var(--ink);}
+  h1,h2,h3,.display{font-family:'Playfair Display',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;letter-spacing:.02em;}
+
+  header.top{
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: var(--paper);
+    padding: 22px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    position: relative;
+    z-index: 2;
+    border-bottom: 2px solid var(--gold);
+  }
+  header.top .brand{display:flex;align-items:center;gap:16px;}
+  .seal{
+    width:46px;height:46px;border-radius:50%;
+    background: rgba(197, 155, 39, 0.1);
+    border:2px solid var(--gold-2);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Playfair Display',serif;font-weight:700;color:var(--gold-2);font-size:16px;position:relative;
+  }
+  .seal::before{content:"";position:absolute;inset:3px;border:1px dashed var(--gold-2);border-radius:50%;opacity:.7;}
+  header.top .brand-text h1{font-size:21px;margin:0;font-weight:700;letter-spacing:.01em; color:#fff;}
+  header.top .brand-text span{font-size:12px;color:#94A3B8;letter-spacing:.05em;text-transform:uppercase;font-weight:500;}
+
+  .admin-link-btn{
+    background:rgba(229,193,88,0.12);
+    border:1px solid var(--gold-2);
+    color:var(--gold-2);
+    padding:8px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:all 0.2s ease;
+  }
+  .admin-link-btn:hover{background:var(--gold);color:#fff; transform: translateY(-1px);}
+
+  nav.tabs{display:flex;gap:8px;background:#070C1E;padding:0 32px;}
+  nav.tabs button{
+    background:transparent;border:none;color:#94A3B8;padding:16px 20px;
+    font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:14px;
+    cursor:pointer;border-bottom:3px solid transparent;transition:.2s;
+  }
+  nav.tabs button.active{color:#fff;border-bottom-color:var(--gold-2);}
+  nav.tabs button:hover{color:#fff;}
+
+  main{max-width:880px;margin:0 auto;padding:40px 20px 80px;}
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:32px 36px;
+    box-shadow:var(--shadow);
+  }
+  .card + .card{margin-top:24px;}
+  .section-title{display:flex;align-items:baseline;gap:10px;margin-bottom:4px;}
+  .section-title h2{font-size:24px;margin:0;font-weight:700;color:var(--navy);}
+  .section-sub{color:var(--muted);font-size:14px;margin:6px 0 24px;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field.full{grid-column:1 / -1;}
+  label{font-size:12px;font-weight:700;color:var(--navy-2);text-transform:uppercase;letter-spacing:.04em;}
+  input,select{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:14.5px;
+    padding:11px 14px;
+    border:1px solid #CBD5E1;
+    border-radius:8px;
+    background:var(--paper);
+    color:var(--ink);
+    transition: all 0.15s ease-in-out;
+  }
+  input:focus,select:focus{
+    outline:none;
+    border-color:var(--gold);
+    box-shadow: 0 0 0 3px rgba(197, 155, 39, 0.2);
+    background: #fff;
+  }
+  .hint{font-size:11.5px;color:var(--muted);}
+  .error-text{font-size:12.5px;color:var(--red);min-height:14px;margin-top:6px;font-weight:500;}
+
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  button.btn, a.btn{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    padding:12px 24px;
+    border-radius:8px;
+    border:none;
+    cursor:pointer;
+    transition:all .2s ease;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .btn-primary{background:var(--navy);color:#fff; box-shadow: 0 4px 12px rgba(11, 19, 43, 0.15);}
+  .btn-primary:hover{background:var(--navy-2); transform:translateY(-1px);}
+  .btn-ghost{background:transparent;color:var(--navy);border:1px solid var(--line);}
+  .btn-ghost:hover{background:var(--paper-2);}
+  .btn-gold{background:var(--gold);color:#fff; box-shadow: 0 4px 12px rgba(197, 155, 39, 0.2);}
+  .btn-gold:hover{background:#B28A20; transform:translateY(-1px);}
+  button.btn:disabled{opacity:.5;cursor:not-allowed; transform:none !important;}
+
+  .stamp{
+    width:115px;height:115px;border-radius:50%;border:3px solid currentColor;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-family:'Playfair Display',serif;font-weight:700;font-size:13px;
+    text-transform:uppercase;letter-spacing:.05em;position:relative;margin:0 auto 16px;transform:rotate(-6deg);
+  }
+  .stamp::before{content:"";position:absolute;inset:6px;border:1px dashed currentColor;border-radius:50%;}
+  .stamp.pending{color:var(--amber);}
+  .stamp.processing{color:#2563EB;}
+  .stamp.completed{color:var(--green);}
+  .stamp.unpaid{color:var(--red);}
+
+  .ref-box{
+    display:flex;justify-content:space-between;align-items:center;
+    background:var(--paper-2);border:1px dashed var(--gold);
+    border-radius:10px;padding:16px 20px;margin-bottom:24px;
+  }
+  .ref-box .ref-no{font-size:18px;font-weight:700;color:var(--navy);}
+  .ref-box .ref-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+
+  .status-banner{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 20px;border-radius:8px;font-size:15px;font-weight:600;margin-bottom:20px;text-align:center;gap:4px;}
+  .status-banner.ok{background:#ECFDF5;color:var(--green); border:1px solid #A7F3D0;}
+  .status-banner.warn{background:#FFFBEB;color:var(--amber); border:1px solid #FDE68A;}
+  .status-banner.err{background:#FEF2F2;color:var(--red); border:1px solid #FECACA;}
+  .hidden{display:none !important;}
+
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;margin:20px 0;}
+  .result-grid .r-label{font-size:11.5px;text-transform:uppercase;color:var(--muted);letter-spacing:.04em;font-weight:600;}
+  .result-grid .r-value{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px;}
+
+  .wait-msg{text-align:center;font-size:14.5px;font-weight:600;color:var(--navy);margin-top:20px;padding:14px;background:var(--paper-2);border-radius:8px;}
+  
+  .preview-iframe-container{margin-top:20px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#f9f9f9;}
+  .preview-iframe-container iframe{width:100%;height:450px;border:none;}
+
+  footer{text-align:center;color:var(--muted);font-size:13px;padding:32px;font-weight:500;}
+  @media (max-width:640px){ .grid{grid-template-columns:1fr;} .result-grid{grid-template-columns:1fr;} .card{padding:20px;} }
+
+  @media print {
+    header, nav, footer, .actions, .section-sub, form { display: none !important; }
+    body { background: #fff; }
+    .card { border: none; box-shadow: none; padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="seal">GCC</div>
+    <div class="brand-text">
+      <h1>GCC Appointment</h1>
+      <span>Visa &amp; Travel Appointment Booking</span>
+    </div>
+  </div>
+  <div>
+    <a href="/admin.html" class="admin-link-btn">Admin Portal &rarr;</a>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="active" data-tab="apply">New Appointment</button>
+  <button data-tab="status">Check Status</button>
+</nav>
+
+<main>
+
+  <!-- APPLY TAB -->
+  <section id="tab-apply">
+    <div class="card" id="form-card">
+      <div class="section-title"><h2>Passport &amp; Applicant Details</h2></div>
+      <p class="section-sub">Fill in every field exactly as printed on your passport.</p>
+
+      <form id="apptForm" novalidate>
+        <div class="grid">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" id="firstName" required placeholder="e.g. Mohammad">
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" id="lastName" required placeholder="e.g. Hossain">
+          </div>
+          <div class="field">
+            <label>Date of Birth</label>
+            <input type="date" id="dob" required>
+          </div>
+          <div class="field">
+            <label>Marital Status</label>
+            <select id="maritalStatus" required>
+              <option value="">Select Status</option>
+              <option>Single</option>
+              <option>Married</option>
+              <option>Divorced</option>
+              <option>Widowed</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Gender</label>
+            <select id="gender" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Passport Number</label>
+            <input type="text" id="passportNumber" required placeholder="e.g. A01234567">
+          </div>
+          <div class="field">
+            <label>National ID (NID)</label>
+            <input type="text" id="nid" required placeholder="e.g. 1990123456789">
+          </div>
+          <div class="field">
+            <label>Passport Issue Date</label>
+            <input type="date" id="issueDate" required>
+          </div>
+          <div class="field">
+            <label>Passport Expiry Date</label>
+            <input type="date" id="expiryDate" required>
+          </div>
+          <div class="field">
+            <label>Travelling Country</label>
+            <select id="travellingCountry" required>
+              <option value="">Select Country</option>
+              <option>Saudi Arabia</option>
+              <option>United Arab Emirates</option>
+              <option>Qatar</option>
+              <option>Kuwait</option>
+              <option>Bahrain</option>
+              <option>Oman</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Mobile Number</label>
+            <input type="tel" id="mobileNumber" required placeholder="e.g. 01700000000">
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="email" required placeholder="e.g. name@example.com">
+          </div>
+          <div class="field">
+            <label>Location Name</label>
+            <select id="locationName" required>
+              <option value="">Select Location</option>
+              <option value="Dhaka">Dhaka</option>
+              <option value="Sherpur">Sherpur</option>
+              <option value="Chandpur">Chandpur</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Medical Center Name</label>
+            <select id="medicalCenter" required>
+              <option value="">Select Location First</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Payment Category</label>
+            <select id="paymentCategory" required>
+              <option value="">Loading categories…</option>
+            </select>
+            <span class="hint" id="categoryHint"></span>
+          </div>
+        </div>
+        <div class="error-text" id="formError"></div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Submit &amp; Proceed to Payment</button>
+          <button type="reset" class="btn btn-ghost" id="resetBtn">Reset</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PAYMENT STEP -->
+    <div class="card hidden" id="payment-card">
+      <div class="section-title"><h2>Complete Payment</h2></div>
+      <div class="ref-box">
+        <div>
+          <div class="ref-label">Your Reference Number</div>
+          <div class="ref-no mono" id="payRefNo">—</div>
+        </div>
+        <div style="text-align:right">
+          <div class="ref-label">Amount Due</div>
+          <div class="ref-no mono" id="payAmount">—</div>
+        </div>
+      </div>
+
+      <p class="section-sub">Select a payment method below, send the exact amount, then enter your details to confirm.</p>
+      
+      <div class="grid" style="margin-bottom:16px;">
+        <div class="field full">
+          <label>Select Payment System</label>
+          <select id="selectedPaymentMethod" required>
+            <option value="">Select Payment Option</option>
+            <option value="MFS System or Mobile Banking System">1. MFS System or Mobile Banking System</option>
+            <option value="Bank Transfer">2. Bank Transfer</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="dynamicPaymentFields"></div>
+
+      <div class="error-text" id="paymentError"></div>
+      <div class="actions">
+        <button class="btn btn-gold" id="confirmPaymentBtn">I've Sent the Payment</button>
+        <button class="btn btn-ghost" id="backToFormBtn">Back</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS STEP -->
+    <div class="card hidden" id="success-card">
+      <div class="stamp completed">Payment<br>Received</div>
+      
+      <div class="status-banner ok" id="successBanner">
+        <span style="font-size:17px; font-weight:700;">Payment Successfully Done</span>
+        <span style="font-size:13.5px; opacity:0.9; font-weight:500;">Have a good day.</span>
+      </div>
+
+      <div class="result-grid">
+        <div><div class="r-label">Reference Number</div><div class="r-value mono" id="doneRef">—</div></div>
+        <div><div class="r-label">Passport Number</div><div class="r-value mono" id="doneNo">—</div></div>
+      </div>
+
+      <div class="wait-msg">Waiting for your appointment ready.</div>
+
+      <div class="actions" style="justify-content:center; margin-top:20px;">
+        <button class="btn btn-primary" id="downloadReceiptBtn">Download Money Receipt (PDF)</button>
+        <button class="btn btn-ghost" id="newApptBtn">Start a New Appointment</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS TAB -->
+  <section id="tab-status" class="hidden">
+    <div class="card">
+      <div class="section-title"><h2>Check Appointment Status</h2></div>
+      <p class="section-sub">Search using your Transaction ID, Passport Number, or Reference Number.</p>
+      
+      <div class="grid">
+        <div class="field full">
+          <label>Transaction ID / Passport / Reference Number</label>
+          <input type="text" id="searchInput" placeholder="Enter Transaction ID, Passport No, or Reference No">
+        </div>
+      </div>
+      
+      <div class="error-text" id="searchError"></div>
+      
+      <div class="actions" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <button class="btn btn-primary" id="searchBtn">Search Appointment</button>
+        <div id="quickReprintBtnContainer"></div>
+      </div>
+    </div>
+
+    <div class="card hidden" id="statusResultCard"></div>
+  </section>
+
+</main>
+
+<footer>GCC Appointment System &bull; Medical &amp; Travel Booking</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp, doc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDmlDoq7eF-6_WOTrd0c76pXpMx2F94xJU",
+  authDomain: "final-medical-slip.firebaseapp.com",
+  databaseURL: "https://final-medical-slip-default-rtdb.firebaseio.com",
+  projectId: "final-medical-slip",
+  storageBucket: "final-medical-slip.firebasestorage.app",
+  messagingSenderId: "458840938607",
+  appId: "1:458840938607:web:10cc865f9a2be277d9559a",
+  measurementId: "G-M7SCCS01SX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let currentUnsubscribe = null;
+let pendingFormData = null;
+
+const medicalCenterData = {
+  "Dhaka": [
+    "Green Crescent Health Services (GAMCA Dhaka)",
+    "Medinova Medical Services Ltd.",
+    "Al-Riyadh Medical Checkup Center",
+    "Gulshan Medicare Center",
+    "Ibn Sina Medical Center (GAMCA Panel)"
+  ],
+  "Sherpur": [
+    "Sherpur GAMCA Approved Medical Center",
+    "Central Medical Checkup Center, Sherpur",
+    "Sherpur Medicare Diagnostic Center"
+  ],
+  "Chandpur": [
+    "Chandpur Medical Checkup Point (GAMCA)",
+    "Padma Medical Center, Chandpur",
+    "Chandpur Diagnostic & Health Care"
+  ]
+};
+
+document.getElementById('locationName').addEventListener('change', (e) => {
+  const selectedLocation = e.target.value;
+  const centerSelect = document.getElementById('medicalCenter');
+  
+  if (selectedLocation && medicalCenterData[selectedLocation]) {
+    centerSelect.innerHTML = '<option value="">Select Medical Center</option>' + 
+      medicalCenterData[selectedLocation].map(c => `<option value="${c}">${c}</option>`).join('');
+  } else {
+    centerSelect.innerHTML = '<option value="">Select Location First</option>';
+  }
+});
+
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-apply').classList.toggle('hidden', btn.dataset.tab!=='apply');
+    document.getElementById('tab-status').classList.toggle('hidden', btn.dataset.tab!=='status');
+  });
+});
+
+let categories = [];
+async function loadCategories(){
+  const sel = document.getElementById('paymentCategory');
+  try{
+    const snap = await getDocs(collection(db,'paymentCategories'));
+    categories = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(categories.length===0){
+      categories = [{ id: 'default_gcc', name: 'GCC Medical Slip', amount: 8500 }];
+    }
+    
+    sel.innerHTML = '<option value="">Select Category</option>' + categories.map(c=>
+      `<option value="${c.id}">${c.name} — ${c.amount} BDT</option>`).join('');
+
+  }catch(e){
+    console.error(e);
+    categories = [{ id: 'default_gcc', name: 'GCC Medical Slip', amount: 8500 }];
+    sel.innerHTML = '<option value="default_gcc">GCC Medical Slip — 8500 BDT</option>';
+  }
+}
+loadCategories();
+
+document.getElementById('selectedPaymentMethod').addEventListener('change', (e) => {
+  const method = e.target.value;
+  const container = document.getElementById('dynamicPaymentFields');
+  
+  if (method === 'MFS System or Mobile Banking System') {
+    container.innerHTML = `
+      <div class="grid">
+        <div class="field">
+          <label>1. MFS Method</label>
+          <select id="mfsMethod" required>
+            <option value="">Select MFS Provider</option>
+            <option value="bkash">bKash</option>
+            <option value="nagad">Nagad</option>
+            <option value="rocket">Rocket</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>2. MFS Mobile No</label>
+          <input type="tel" id="mfsMobileNo" required placeholder="e.g. 01700000000">
+        </div>
+        <div class="field full">
+          <label>3. Transaction ID</label>
+          <input type="text" id="mfsTxnId" required placeholder="Enter MFS Transaction ID">
+        </div>
+      </div>
+    `;
+  } else if (method === 'Bank Transfer') {
+    container.innerHTML = `
+      <div class="grid">
+        <div class="field">
+          <label>1. Bank Name</label>
+          <input type="text" id="bankName" required placeholder="e.g. Dutch Bangla Bank, Brac Bank">
+        </div>
+        <div class="field">
+          <label>2. Account No</label>
+          <input type="text" id="bankAccountNo" required placeholder="Enter Account Number">
+        </div>
+        <div class="field full">
+          <label>3. Transaction ID</label>
+          <input type="text" id="bankTxnId" required placeholder="Enter Bank Reference / Transaction ID">
+        </div>
+      </div>
+    `;
+  } else {
+    container.innerHTML = '';
+  }
+});
+
+function genRefNo(){
+  const d = new Date();
+  const ymd = d.getFullYear().toString() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+  const rand = Math.floor(1000+Math.random()*9000);
+  return `GCC-${ymd}-${rand}`;
+}
+
+let currentApptId = null;
+let currentApptData = null;
+
+document.getElementById('apptForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const errEl = document.getElementById('formError');
+  errEl.textContent='';
+
+  const catId = document.getElementById('paymentCategory').value;
+  const cat = categories.find(c=>c.id===catId) || categories[0];
+  if(!catId && !cat){ errEl.textContent = 'Please select a payment category.'; return; }
+
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const passportNumber = document.getElementById('passportNumber').value.trim().toUpperCase();
+  const mobileNumber = document.getElementById('mobileNumber').value.trim();
+  const gender = document.getElementById('gender').value;
+  const locationName = document.getElementById('locationName').value;
+  const medicalCenter = document.getElementById('medicalCenter').value;
+
+  if(!firstName || !lastName || !passportNumber || !mobileNumber || !gender || !locationName || !medicalCenter){
+    errEl.textContent = 'Please fill all required fields including Gender, Location and Medical Center.';
+    return;
+  }
+
+  pendingFormData = {
+    firstName: firstName,
+    lastName: lastName,
+    dob: document.getElementById('dob').value,
+    maritalStatus: document.getElementById('maritalStatus').value,
+    gender: gender,
+    passportNumber: passportNumber,
+    nid: document.getElementById('nid').value.trim(),
+    issueDate: document.getElementById('issueDate').value,
+    expiryDate: document.getElementById('expiryDate').value,
+    travellingCountry: document.getElementById('travellingCountry').value,
+    mobileNumber: mobileNumber,
+    email: document.getElementById('email').value.trim(),
+    locationName: locationName,
+    medicalCenter: medicalCenter,
+    paymentCategoryId: cat?.id || 'default',
+    paymentCategoryName: cat?.name || 'GCC Medical Slip',
+    amount: cat?.amount || 8500,
+    referenceNo: genRefNo(),
+    paymentStatus: 'submitted',
+    appointmentStatus: 'pending'
+  };
+
+  document.getElementById('form-card').classList.add('hidden');
+  document.getElementById('payment-card').classList.remove('hidden');
+  document.getElementById('payRefNo').textContent = pendingFormData.referenceNo;
+  document.getElementById('payAmount').textContent = pendingFormData.amount + ' BDT';
+  
+  document.getElementById('selectedPaymentMethod').value = '';
+  document.getElementById('dynamicPaymentFields').innerHTML = '';
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  document.getElementById('formError').textContent='';
+  document.getElementById('medicalCenter').innerHTML = '<option value="">Select Location First</option>';
+});
+
+document.getElementById('backToFormBtn').addEventListener('click', ()=>{
+  document.getElementById('payment-card').classList.add('hidden');
+  document.getElementById('form-card').classList.remove('hidden');
+});
+
+document.getElementById('confirmPaymentBtn').addEventListener('click', async ()=>{
+  const selectedMethod = document.getElementById('selectedPaymentMethod').value;
+  const errEl = document.getElementById('paymentError');
+  errEl.textContent='';
+
+  if(!selectedMethod){ errEl.textContent='Please select a payment system option.'; return; }
+  if(!pendingFormData){ errEl.textContent='Data missing, please go back and try again.'; return; }
+
+  let paymentDetails = { paymentMethodUsed: selectedMethod };
+
+  if (selectedMethod === 'MFS System or Mobile Banking System') {
+    const mfsMethod = document.getElementById('mfsMethod')?.value;
+    const mfsMobileNo = document.getElementById('mfsMobileNo')?.value.trim();
+    const txnId = document.getElementById('mfsTxnId')?.value.trim();
+
+    if(!mfsMethod || !mfsMobileNo || !txnId){
+      errEl.textContent='Please fill all MFS details (Method, Mobile No, and Transaction ID).';
+      return;
+    }
+    paymentDetails.mfsMethod = mfsMethod;
+    paymentDetails.mfsMobileNo = mfsMobileNo;
+    paymentDetails.customerTxnId = txnId;
+  } else if (selectedMethod === 'Bank Transfer') {
+    const bankName = document.getElementById('bankName')?.value.trim();
+    const bankAccountNo = document.getElementById('bankAccountNo')?.value.trim();
+    const txnId = document.getElementById('bankTxnId')?.value.trim();
+
+    if(!bankName || !bankAccountNo || !txnId){
+      errEl.textContent='Please fill all Bank Transfer details (Bank Name, Account No, and Transaction ID).';
+      return;
+    }
+    paymentDetails.bankName = bankName;
+    paymentDetails.bankAccountNo = bankAccountNo;
+    paymentDetails.customerTxnId = txnId;
+  }
+
+  const btn = document.getElementById('confirmPaymentBtn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  try{
+    const finalPayload = {
+      ...pendingFormData,
+      ...paymentDetails,
+      createdAt: serverTimestamp()
+    };
+
+    const docRef = await addDoc(collection(db,'appointments'), finalPayload);
+    currentApptId = docRef.id;
+    currentApptData = finalPayload;
+
+    document.getElementById('payment-card').classList.add('hidden');
+    document.getElementById('success-card').classList.remove('hidden');
+    document.getElementById('doneRef').textContent = currentApptData.referenceNo;
+    document.getElementById('doneNo').textContent = currentApptData.passportNumber;
+
+    downloadReceipt(currentApptData);
+
+  }catch(err){
+    console.error("Firestore Save Error: ", err);
+    errEl.textContent='Could not confirm payment: ' + (err.message || 'Permission denied or network issue.');
+  }finally{
+    btn.disabled=false; btn.textContent = "I've Sent the Payment";
+  }
+});
+
+document.getElementById('downloadReceiptBtn').addEventListener('click', ()=>{
+  if(currentApptData) downloadReceipt(currentApptData);
+});
+
+document.getElementById('newApptBtn').addEventListener('click', ()=>{
+  document.getElementById('apptForm').reset();
+  document.getElementById('medicalCenter').innerHTML = '<option value="">Select Location First</option>';
+  document.getElementById('success-card').classList.add('hidden');
+  document.getElementById('form-card').classList.remove('hidden');
+  currentApptId = null; currentApptData = null; pendingFormData = null;
+});
+
+window.downloadReceipt = function(data){
+  try{
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    
+    pdf.setFillColor(11, 19, 43);
+    pdf.rect(0, 0, 210, 38, 'F');
+    
+    pdf.setTextColor(229, 193, 88);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(22);
+    pdf.text('GCC APPOINTMENT', 15, 18);
+    
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+    pdf.text('PAYMENT RECEIPT & INVOICE', 15, 26);
+    
+    pdf.setFontSize(9);
+    pdf.text(`Invoice Date: ${new Date().toLocaleDateString()}`, 195, 18, { align: 'right' });
+    pdf.text(`Ref: ${data.referenceNo || 'N/A'}`, 195, 26, { align: 'right' });
+
+    pdf.setFillColor(241, 245, 249);
+    pdf.rect(15, 45, 180, 16, 'F');
+    pdf.setDrawColor(226, 232, 240);
+    pdf.rect(15, 45, 180, 16, 'S');
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(10);
+    pdf.setTextColor(15, 23, 42);
+    pdf.text('PAYMENT STATUS:', 20, 55);
+    pdf.setTextColor(16, 185, 129);
+    pdf.text('PAYMENT SUBMITTED (VERIFICATION PENDING)', 60, 55);
+
+    pdf.setFontSize(11);
+    pdf.setTextColor(11, 19, 43);
+    pdf.text('APPLICANT & TRAVEL DETAILS', 15, 74);
+    
+    pdf.setLineWidth(0.4);
+    pdf.setDrawColor(195, 155, 39);
+    pdf.line(15, 76, 195, 76);
+
+    let startY = 84;
+    const rowsApplicant = [
+      ['Full Name', `${data.firstName || ''} ${data.lastName || ''}`],
+      ['Passport Number', data.passportNumber || '—'],
+      ['Gender', data.gender || '—'],
+      ['Marital Status', data.maritalStatus || '—'],
+      ['Travelling Country', data.travellingCountry || '—'],
+      ['Location Name', data.locationName || '—'],
+      ['Medical Center', data.medicalCenter || '—']
+    ];
+
+    rowsApplicant.forEach(([label, value], idx) => {
+      pdf.setFillColor(idx % 2 === 0 ? 248 : 255, idx % 2 === 0 ? 250 : 255, idx % 2 === 0 ? 252 : 255);
+      pdf.rect(15, startY - 5, 180, 8, 'F');
+      
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(9.5);
+      pdf.setTextColor(100, 116, 139);
+      pdf.text(label, 20, startY);
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(15, 23, 42);
+      pdf.text(String(value), 80, startY);
+
+      startY += 8;
+    });
+
+    startY += 10;
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(11);
+    pdf.setTextColor(11, 19, 43);
+    pdf.text('PAYMENT & TRANSACTION DETAILS', 15, startY);
+    
+    pdf.line(15, startY + 2, 195, startY + 2);
+    startY += 10;
+
+    let rowsPayment = [
+      ['Payment Category', data.paymentCategoryName || 'GCC Medical Slip'],
+      ['Payment System', data.paymentMethodUsed || '—']
+    ];
+
+    if(data.paymentMethodUsed === 'MFS System or Mobile Banking System') {
+      rowsPayment.push(['MFS Method', (data.mfsMethod || '—').toUpperCase()]);
+      rowsPayment.push(['MFS Mobile No', data.mfsMobileNo || '—']);
+      rowsPayment.push(['Transaction ID', data.customerTxnId || '—']);
+    } else if(data.paymentMethodUsed === 'Bank Transfer') {
+      rowsPayment.push(['Bank Name', data.bankName || '—']);
+      rowsPayment.push(['Account No', data.bankAccountNo || '—']);
+      rowsPayment.push(['Transaction ID', data.customerTxnId || '—']);
+    }
+
+    rowsPayment.push(['Total Amount Paid', `${data.amount || 0} BDT`]);
+
+    rowsPayment.forEach(([label, value], idx) => {
+      pdf.setFillColor(idx % 2 === 0 ? 248 : 255, idx % 2 === 0 ? 250 : 255, idx % 2 === 0 ? 252 : 255);
+      pdf.rect(15, startY - 5, 180, 8, 'F');
+
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(9.5);
+      pdf.setTextColor(100, 116, 139);
+      pdf.text(label, 20, startY);
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(15, 23, 42);
+      pdf.text(String(value), 80, startY);
+
+      startY += 8;
+    });
+
+    pdf.setDrawColor(226, 232, 240);
+    pdf.setFillColor(248, 250, 252);
+    pdf.roundedRect(15, 240, 180, 25, 3, 3, 'FD');
+
+    pdf.setFontSize(8.5);
+    pdf.setFont('helvetica', 'italic');
+    pdf.setTextColor(100, 116, 139);
+    pdf.text('Note: Keep this receipt safe. You can check your live appointment status online using your', 20, 250);
+    pdf.text(`Passport Number (${data.passportNumber || ''}) or Reference Number (${data.referenceNo || ''}).`, 20, 255);
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(8);
+    pdf.text('Authorized System Generated Invoice — GCC Appointment Center', 105, 280, { align: 'center' });
+
+    pdf.save(`Invoice-${data.referenceNo || 'GCC'}.pdf`);
+  }catch(e){
+    console.error('Error generating PDF receipt:', e);
+  }
+}
+
+document.getElementById('searchBtn').addEventListener('click', doSearch);
+document.getElementById('searchInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') doSearch(); });
+
+async function doSearch(){
+  const errEl = document.getElementById('searchError');
+  const resCard = document.getElementById('statusResultCard');
+  const quickContainer = document.getElementById('quickReprintBtnContainer');
+  errEl.textContent=''; resCard.classList.add('hidden'); resCard.innerHTML=''; quickContainer.innerHTML='';
+  
+  const val = document.getElementById('searchInput').value.trim();
+
+  if(!val){ 
+    errEl.textContent='Please enter Transaction ID, Passport No, or Reference No.'; 
+    return; 
+  }
+
+  const searchBtn = document.getElementById('searchBtn');
+  searchBtn.disabled = true; searchBtn.textContent = 'Searching…';
+
+  if(currentUnsubscribe) { currentUnsubscribe(); currentUnsubscribe = null; }
+
+  try{
+    const apptsRef = collection(db,'appointments');
+    
+    const [qTxn, qPass, qRef] = await Promise.all([
+      getDocs(query(apptsRef, where('customerTxnId','==', val))),
+      getDocs(query(apptsRef, where('passportNumber','==', val.toUpperCase()))),
+      getDocs(query(apptsRef, where('referenceNo','==', val)))
+    ]);
+
+    let results = [];
+    const map = new Map();
+    [...qTxn.docs, ...qPass.docs, ...qRef.docs].forEach(d=>{
+      if(!map.has(d.id)){
+        map.set(d.id, true);
+        results.push({ id: d.id, ...d.data() });
+      }
+    });
+
+    if(results.length === 0){ 
+      errEl.textContent='No matching appointment found.'; 
+      return; 
+    }
+
+    const matchedDoc = results[0];
+    const isTxnSearch = matchedDoc.customerTxnId && matchedDoc.customerTxnId.toLowerCase() === val.toLowerCase();
+    
+    if(isTxnSearch){
+      const encodedData = window.btoa(unescape(encodeURIComponent(JSON.stringify(matchedDoc))));
+      quickContainer.innerHTML = `
+        <button class="btn btn-gold" onclick="downloadReceipt(JSON.parse(decodeURIComponent(escape(window.atob('${encodedData}')))))">Reprint Money Receipt (PDF)</button>
+      `;
+      resCard.classList.add('hidden');
+    } else {
+      currentUnsubscribe = onSnapshot(doc(db, 'appointments', matchedDoc.id), (snapshot) => {
+        if(snapshot.exists()){
+          renderStatus(snapshot.data());
+        }
+      });
+    }
+
+  }catch(err){
+    console.error(err);
+    errEl.textContent='Search failed: ' + (err.message || 'Please check your connection and try again.');
+  }finally{
+    searchBtn.disabled = false; searchBtn.textContent = 'Search Appointment';
+  }
+}
+
+function renderStatus(data){
+  const resCard = document.getElementById('statusResultCard');
+  const apptStatus = (data.appointmentStatus || 'pending').toLowerCase();
+
+  const stampClass = apptStatus === 'completed' || apptStatus === 'confirmed' ? 'completed'
+                    : apptStatus === 'processing' ? 'processing' : 'pending';
+                    
+  const payBanner = data.paymentStatus === 'verified' || data.paymentStatus === 'Verified'
+      ? '<div class="status-banner ok"><span>Payment Verified</span></div>'
+      : data.paymentStatus === 'submitted'
+      ? '<div class="status-banner warn"><span>Payment Submitted — awaiting admin verification</span></div>'
+      : '<div class="status-banner err"><span>Payment not completed yet</span></div>';
+
+  let dynamicMsg = 'Waiting for your appointment ready.';
+  if (apptStatus === 'completed' || apptStatus === 'confirmed') {
+    dynamicMsg = 'Your appointment is ready! Please download or preview your file below.';
+  } else if (apptStatus === 'processing') {
+    dynamicMsg = 'Your appointment is currently under processing.';
+  } else if (apptStatus === 'cancelled' || apptStatus === 'rejected') {
+    dynamicMsg = 'Your appointment has been cancelled or rejected.';
+  }
+
+  let downloadHtml = '';
+  let targetLink = data.completedFileURL || data.completedLink;
+
+  if(targetLink){
+    downloadHtml = `
+      <div class="actions" style="justify-content:center; flex-wrap:wrap; gap:10px;">
+        <a class="btn btn-primary" href="${targetLink}" target="_blank">Open / Download Result File</a>
+        <button class="btn btn-ghost" onclick="window.print()">Print Summary</button>
+      </div>
+      <div class="preview-iframe-container">
+        <iframe src="${targetLink}"></iframe>
+      </div>
+    `;
+  } else {
+    downloadHtml = `
+      <div class="actions" style="justify-content:center; flex-wrap:wrap; gap:10px;">
+        <button class="btn btn-ghost" onclick="window.print()">Print Summary</button>
+      </div>
+    `;
+  }
+
+  let paymentDetailsHtml = `
+    <div><div class="r-label">Payment System</div><div class="r-value">${data.paymentMethodUsed || '—'}</div></div>
+  `;
+  if(data.paymentMethodUsed === 'MFS System or Mobile Banking System') {
+    paymentDetailsHtml += `
+      <div><div class="r-label">MFS Method</div><div class="r-value" style="text-transform:uppercase;">${data.mfsMethod || '—'}</div></div>
+      <div><div class="r-label">MFS Mobile No</div><div class="r-value mono">${data.mfsMobileNo || '—'}</div></div>
+    `;
+  } else if(data.paymentMethodUsed === 'Bank Transfer') {
+    paymentDetailsHtml += `
+      <div><div class="r-label">Bank Name</div><div class="r-value">${data.bankName || '—'}</div></div>
+      <div><div class="r-label">Account No</div><div class="r-value mono">${data.bankAccountNo || '—'}</div></div>
+    `;
+  }
+  paymentDetailsHtml += `
+    <div><div class="r-label">Transaction ID</div><div class="r-value mono">${data.customerTxnId || 'Pending'}</div></div>
+  `;
+
+  resCard.innerHTML = `
+    <div class="stamp ${stampClass}">${apptStatus.toUpperCase()}</div>
+    ${payBanner}
+    <div class="result-grid">
+      <div><div class="r-label">Reference Number</div><div class="r-value mono">${data.referenceNo || '—'}</div></div>
+      <div><div class="r-label">Applicant Name</div><div class="r-value">${data.firstName || ''} ${data.lastName || ''}</div></div>
+      <div><div class="r-label">Passport Number</div><div class="r-value mono">${data.passportNumber || '—'}</div></div>
+      <div><div class="r-label">Gender</div><div class="r-value">${data.gender || '—'}</div></div>
+      <div><div class="r-label">Location</div><div class="r-value">${data.locationName || '—'}</div></div>
+      <div><div class="r-label">Medical Center</div><div class="r-value">${data.medicalCenter || '—'}</div></div>
+      <div><div class="r-label">Travelling Country</div><div class="r-value">${data.travellingCountry || '—'}</div></div>
+      <div><div class="r-label">Payment Category</div><div class="r-value">${data.paymentCategoryName || '—'}</div></div>
+      <div><div class="r-label">Amount</div><div class="r-value">${data.amount || 0} BDT</div></div>
+      ${paymentDetailsHtml}
+      <div><div class="r-label">Appointment Status</div><div class="r-value" style="text-transform:capitalize;">${data.appointmentStatus || 'pending'}</div></div>
+    </div>
+    <div class="wait-msg">${dynamicMsg}</div>
+    ${downloadHtml}
+  `;
+  resCard.classList.remove('hidden');
+}
+</script>
+</body>
+</html>
